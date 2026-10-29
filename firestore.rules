@@ -2,12 +2,12 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Global deny-all default
+    // Default deny-all catch-all
     match /{document=**} {
       allow read, write: if false;
     }
 
-    // Helper Functions
+    // Helper functions
     function isSignedIn() {
       return request.auth != null;
     }
@@ -27,41 +27,30 @@ service cloud.firestore {
       return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
     }
 
-    // Validation for UserProfile
+    // Validasi data profil pengguna
     function isValidUserProfile(data) {
       return data.uid is string && data.uid.size() <= 128 &&
-             data.email is string && data.email.size() <= 256 &&
-             data.displayName is string && data.displayName.size() <= 100;
+             data.email is string && data.email.size() <= 256;
     }
 
-    // Validation for AppIdea
+    // Validasi data ide aplikasi
     function isValidAppIdea(data) {
       return data.id is string && data.id.size() <= 128 &&
              data.userId is string && data.userId.size() <= 128 &&
-             data.title is string && data.title.size() <= 200 &&
-             data.summary is string && data.summary.size() <= 1000 &&
-             data.category is string && data.category.size() <= 80;
+             data.title is string && data.title.size() <= 200;
     }
 
-    // User Profile Document
+    // 1. Dokumen Profil Pengguna: Hanya pemilik (userId) yang dapat membaca dan menulis
     match /users/{userId} {
       allow get: if isOwner(userId) || isAdmin();
       allow list: if isAdmin();
-      allow create: if isOwner(userId) &&
-                       isValidId(userId) &&
-                       isValidUserProfile(request.resource.data) &&
-                       request.resource.data.uid == userId;
-      allow update: if (isOwner(userId) &&
-                        isValidId(userId) &&
-                        isValidUserProfile(request.resource.data) &&
-                        request.resource.data.uid == userId) ||
-                       isAdmin();
-      allow delete: if isAdmin();
+      allow create: if isOwner(userId) && isValidId(userId) && isValidUserProfile(request.resource.data) && request.resource.data.uid == userId;
+      allow update: if (isOwner(userId) && isValidId(userId) && isValidUserProfile(request.resource.data) && request.resource.data.uid == userId) || isAdmin();
+      allow delete: if isOwner(userId) || isAdmin();
 
-      // User's Ideas subcollection
+      // 2. Sub-koleksi Ide Aplikasi Pengguna: Setiap user HANYA bisa membaca/menulis datanya sendiri
       match /ideas/{ideaId} {
-        allow get: if isOwner(userId) || isAdmin();
-        allow list: if isOwner(userId) || isAdmin();
+        allow get, list: if isOwner(userId) || isAdmin();
         allow create: if isOwner(userId) &&
                          isValidId(ideaId) &&
                          isValidAppIdea(request.resource.data) &&
@@ -69,13 +58,19 @@ service cloud.firestore {
         allow update: if (isOwner(userId) &&
                           isValidId(ideaId) &&
                           isValidAppIdea(request.resource.data) &&
-                          request.resource.data.userId == userId) ||
+                          request.resource.data.userId == userId &&
+                          request.resource.data.userId == resource.data.userId) ||
                          isAdmin();
         allow delete: if isOwner(userId) || isAdmin();
       }
+
+      // 3. Sub-koleksi kustom lainnya milik pengguna
+      match /{allSubcollections=**} {
+        allow read, write: if isOwner(userId) || isAdmin();
+      }
     }
 
-    // Admins Collection
+    // Koleksi registry Admin
     match /admins/{adminId} {
       allow read: if isSignedIn();
       allow write: if isAdmin();

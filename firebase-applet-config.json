@@ -1,12 +1,12 @@
 {
-  "projectId": "unique-phantasmata-t5v9p",
-  "appId": "1:425138983979:web:da935b24db77002237866e",
-  "apiKey": "AIzaSyCSCl8D7sIEo8ayvYbAu0M7HuUPS1Fn978",
-  "authDomain": "unique-phantasmata-t5v9p.firebaseapp.com",
+  "projectId": "ucup-ai",
+  "appId": "1:553188107764:web:476ad8a98766568fc305a1",
+  "apiKey": "AIzaSyDhVJDynl2ATfuN4qGvKb3AAEIt8YUSYmM",
+  "authDomain": "ucup-ai.firebaseapp.com",
   "firestoreDatabaseId": "ai-studio-510029d0-e22a-4d32-9a36-1923fcca4294",
-  "storageBucket": "unique-phantasmata-t5v9p.firebasestorage.app",
-  "messagingSenderId": "425138983979",
+  "storageBucket": "ucup-ai.firebasestorage.app",
+  "messagingSenderId": "553188107764",
   "measurementId": "",
-  "oAuthClientId": "425138983979-lf9r77ujbvbq1jv2naegsh3b0ohoak0n.apps.googleusercontent.com",
+  "oAuthClientId": "553188107764-0duvn60jb067h7fukgu7evmd8hl13at0.apps.googleusercontent.com",
   "recaptchaSiteKey": ""
 }
