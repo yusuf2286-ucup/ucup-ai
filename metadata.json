@@ -1,0 +1,6 @@
+{
+  "name": "IdeaFlow AI - App Idea Studio",
+  "description": "Platform pembuat dan manajemen ide aplikasi cerdas berbasis Gemini AI dengan Firebase Auth, Firestore per user, dan dashboard admin.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
